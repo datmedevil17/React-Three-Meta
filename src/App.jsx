@@ -1,32 +1,20 @@
 import { useRef, useState } from 'react'
 import './App.css'
-import {Canvas,useFrame} from "@react-three/fiber"
+import {Canvas,useFrame,useThree} from "@react-three/fiber"
+import AnimatedBox from './components/AnimatedBox'
+import CameraOrbitController from './components/CameraOrbitController'
 
-const AnimatedBox=()=>{
-  const meshRef = useRef(null)
-
-  useFrame(()=>{
-    if(meshRef.current){
-      meshRef.current.rotation.x+=0.01;
-
-
-    }
-  })
-
-  return(
-    <mesh ref={meshRef} scale={[3,3,3]}>
-      <boxGeometry/>
-      <meshStandardMaterial/>
-    </mesh>
-  )  
-}
-
+import { OrbitControls,Stats,useHelper } from '@react-three/drei'
 
 function App() {
 
   return (
     <div classname="container">
     <Canvas>
+      {/* <Stats/>
+      <axesHelper/>
+      <gridHelper/> */}
+      <OrbitControls/>
       <ambientLight intensity={0.1}/>
       <directionalLight color="red" position={[0,0,5]}/>
       <AnimatedBox/>
