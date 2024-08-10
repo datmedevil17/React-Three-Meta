@@ -1,29 +1,21 @@
-import { useRef, useState } from 'react'
-import './App.css'
-import {Canvas,useFrame,useThree} from "@react-three/fiber"
-import AnimatedBox from './components/AnimatedBox'
-import CameraOrbitController from './components/CameraOrbitController'
-
-import { OrbitControls,Stats,useHelper } from '@react-three/drei'
+import './App.css';
+import { Canvas } from "@react-three/fiber";
+import Sphere from './components/Sphere';
+import { OrbitControls,useTexture } from '@react-three/drei';
 
 function App() {
 
+  
   return (
-    <div classname="container">
-    <Canvas>
-      {/* <Stats/>
-      <axesHelper/>
-      <gridHelper/> */}
-      <OrbitControls/>
-      <ambientLight intensity={0.1}/>
-      <directionalLight color="red" position={[0,0,5]}/>
-      <AnimatedBox/>
-
-    </Canvas>
-     
-      
+    <div className="container">
+      <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
+        <OrbitControls/>
+        <ambientLight intensity={0.3} />
+        <directionalLight color="white" position={[5, 5, 5]} />
+        <Sphere />
+      </Canvas>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
