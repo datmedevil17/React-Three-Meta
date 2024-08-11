@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { DirectionalLightHelper } from 'three';
 import { useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import MyPlayer from './components/myPlayer';
 
 const Tree = ({ boundary, count }) => {
   const model = useLoader(GLTFLoader, "./models/tree.glb");
@@ -83,6 +84,7 @@ function App() {
           <meshStandardMaterial color={"#458745"} />
         </mesh>
         <Tree boundary={[200,200]} count={40} /> {/* Adjust count as needed */}
+        <MyPlayer/>
       </Canvas>
     </div>
   );
