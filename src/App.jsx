@@ -1,27 +1,48 @@
 import './App.css';
+import * as THREE from 'three';
 import { Canvas } from "@react-three/fiber";
-import Sphere from './components/Sphere';
 import { OrbitControls, useHelper } from '@react-three/drei';
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DirectionalLightHelper } from 'three';
 import { useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Model } from './components/Tree';
-const Tree = () => {
+
+const Tree = ({ boundary, count }) => {
   const model = useLoader(GLTFLoader, "./models/tree.glb");
-  model.scene.traverse((object)=>{
-    if(object.isMesh){
-      object.castShadow=true
+  const [trees, setTrees] = useState([]);
+
+  useEffect(() => {
+    const radius = 5; // Adjust the radius to avoid overlap
+    const tempTrees = [];
+    const occupiedPositions = new Set();
+
+    while (tempTrees.length < count) {
+      const x = Math.random() * (boundary[0] - 2 * radius) - (boundary[0] / 2 - radius);
+      const z = Math.random() * (boundary[1] - 2 * radius) - (boundary[1] / 2 - radius);
+
+      // Check for overlap
+      const key = `${Math.round(x / radius)}-${Math.round(z / radius)}`;
+      if (!occupiedPositions.has(key)) {
+        occupiedPositions.add(key);
+        const treeObject = new THREE.Object3D();
+        treeObject.position.set(x, 0, z);
+        tempTrees.push(treeObject);
+      }
     }
-  })
+
+    setTrees(tempTrees);
+  }, [boundary, count]);
+
   return (
-    <primitive 
-      object={model.scene} 
-      
-      rotation={[Math.PI / 2, 0, 0]} 
-    />
+    <group>
+      {trees.map((tree, index) => (
+        <object3D key={index} position={tree.position} rotation={[Math.PI / 2, 0, 0]}>
+          <primitive object={model.scene.clone()} />
+        </object3D>
+      ))}
+    </group>
   );
-}
+};
 
 function DirectionalLightWithHelper() {
   const lightRef = useRef(null);
@@ -53,7 +74,6 @@ function App() {
         <OrbitControls />
         <ambientLight intensity={0.3} />
         <DirectionalLightWithHelper />
-        {/* <Sphere /> */}
         <mesh
           rotation={[-Math.PI / 2, 0, 0]}
           position={[0, -2, 0]}
@@ -62,8 +82,7 @@ function App() {
           <planeGeometry args={[1000, 1000]} />
           <meshStandardMaterial color={"#458745"} />
         </mesh>
-        {/* <Tree /> */}
-        <Model/>
+        <Tree boundary={[200,200]} count={40} /> {/* Adjust count as needed */}
       </Canvas>
     </div>
   );
